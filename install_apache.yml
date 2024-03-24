@@ -4,41 +4,25 @@
   become: true
   tasks:
 
-  - name: update apt repository - Ubuntu
+  - name: "install apache2 and php packages and update cache - Ubuntu"
     apt: 
+      name: 
+       - apache2
+       - libapache2-mod-php
+      state: latest
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
 
-  - name: install apache2 package - Ubuntu
-    apt: 
-      name: apache2
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: add PHP support for apache2 - Ubuntu
-    apt:
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: update apt repository - CentOS
+  - name: "install apache2 and php and update cache  - CentOS"
     dnf: 
+      name: 
+       - httpd
+       - php
+      state: latest
       update_cache: yes
     when: ansible_distribution == "CentOS"
 
-
-  - name: install apache2_mod_proxy - CentOS
-    dnf: 
-      name: httpd
-      state: latest
-    when: ansible_distribution == "CentOS"
-
-  - name: add PHP support for apache2 - CentOS
-    dnf:
-      name: php
-      state: latest
-    when: ansible_distribution == "CentOS"
 
   - name: Enable service to start on boot up - CentOS
     service:

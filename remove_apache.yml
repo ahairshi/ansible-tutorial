@@ -4,30 +4,17 @@
   become: true
   tasks:
 
-  - name: update apt repository
+
+  - name: remove apache2 and php pacakges and update cache -  Ubuntu
     apt: 
+      name: 
+       - apache2
+       - libapache2-mod-php
+      state: absent
       update_cache: yes
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
-
-  - name: remove apache2_mod_proxy
-    apt: 
-      name: apache2
-      state: absent
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: remove PHP support for apache2
-    apt:
-      name: libapache2-mod-php
-      state: absent
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: update apt repository - CentOS
-    dnf: 
-      update_cache: yes
-    when: ansible_distribution == "CentOS"
-
-  - name: Disable HTTP - CentOS
+  - name: Disable HTTP for CentOS
     firewalld:
       service: http
       zone: public
@@ -37,22 +24,20 @@
     when: ansible_distribution == "CentOS"
 
 
-  - name: Stop httpd - CentOS
+  - name: Stop httpd for CentOS
     service:
       name: httpd
       state: stopped
     when: ansible_distribution == "CentOS"
 
-  - name: uninstall apache2 - CentOS
+  - name: uninstall apache2 and php and update cache -  CentOS
     dnf: 
-      name: httpd
+      name: 
+       - httpd
+       - php
       state: absent
+      update_cache: yes
     when: ansible_distribution == "CentOS"
 
-  - name: remove PHP support for apache2 - CentOS
-    dnf:
-      name: php
-      state: absent
-    when: ansible_distribution == "CentOS"
 
 
