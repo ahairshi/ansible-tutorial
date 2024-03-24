@@ -2,16 +2,23 @@
 
 ```
 
- ansible all -m apt -a update_cache=true --become --ask-become-pass
- ansible all -m apt -a name=vim-nox --become --ask-become-pass
- ansible all -m apt -a name=tmux --become --ask-become-pass
- ansible all -m apt -a name=vim-nox --become --ask-become-pass
- ansible all -m apt -a name=snapd --become --ask-become-pass
- ansible all -m apt -a "name=snapd state=latest" --become --ask-become-pass
- ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
- ansible all -m ansible.builtin.gather_facts --limit 192.168.77.141 | grep ansible_distribution
- ansible-playbook --ask-become-pass remove_apache.yml
-  ansible-playbook --ask-become-pass install_apache.yml
+ansible all -m apt -a update_cache=true --become --ask-become-pass
+ansible all -m apt -a name=vim-nox --become --ask-become-pass
+ansible all -m apt -a name=tmux --become --ask-become-pass
+ansible all -m apt -a name=vim-nox --become --ask-become-pass
+ansible all -m apt -a name=snapd --become --ask-become-pass
+ansible all -m apt -a "name=snapd state=latest" --become --ask-become-pass
+ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
+ansible all -m ansible.builtin.gather_facts --limit 192.168.77.141 | grep ansible_distribution
+ansible-playbook --ask-become-pass remove_apache.yml
+ansible-playbook --ask-become-pass install_apache.yml
+
+systemctl status httpd
+sudo systemctl start httpd
+sudo firewall -cmd --add-port=80/tcp
+sudo firewall-cmd --add-port=80/tcp
+sudo firewall-cmd --remove-port=80/tcp
+sudo systemctl stop httpd
  ```
 
  ![alt text](image.png)

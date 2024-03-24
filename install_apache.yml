@@ -39,3 +39,18 @@
       name: php
       state: latest
     when: ansible_distribution == "CentOS"
+
+  - name: Enable service to start on boot up - CentOS
+    service:
+      name: httpd
+      state: started
+    when: ansible_distribution == "CentOS"
+
+  - name: Create firewall rule for apache service - CentOS
+    firewalld:
+      service: http
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: enabled
+    when: ansible_distribution == "CentOS"

@@ -21,3 +21,38 @@
       name: libapache2-mod-php
       state: absent
     when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: update apt repository - CentOS
+    dnf: 
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Disable HTTP - CentOS
+    firewalld:
+      service: http
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: disabled
+    when: ansible_distribution == "CentOS"
+
+
+  - name: Stop httpd - CentOS
+    service:
+      name: httpd
+      state: stopped
+    when: ansible_distribution == "CentOS"
+
+  - name: uninstall apache2 - CentOS
+    dnf: 
+      name: httpd
+      state: absent
+    when: ansible_distribution == "CentOS"
+
+  - name: remove PHP support for apache2 - CentOS
+    dnf:
+      name: php
+      state: absent
+    when: ansible_distribution == "CentOS"
+
+
