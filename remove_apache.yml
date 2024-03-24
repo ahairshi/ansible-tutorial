@@ -7,14 +7,17 @@
   - name: update apt repository
     apt: 
       update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
 
   - name: remove apache2_mod_proxy
     apt: 
       name: apache2
       state: absent
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: remove PHP support for apache2
     apt:
       name: libapache2-mod-php
       state: absent
+    when: ansible_distribution in ["Debian", "Ubuntu"]
