@@ -3,16 +3,14 @@
 - hosts: all
   become: true
   tasks:
-
-
-  - name: remove apache2 and php pacakges and update cache -  Ubuntu
-    apt: 
+  
+  - name: "install apache and php packages"
+    package: 
       name: 
-       - apache2
-       - libapache2-mod-php
+       - "{{ apache_package }}"
+       - "{{ php_package }}"
       state: absent
       update_cache: yes
-    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: Disable HTTP for CentOS
     firewalld:
@@ -24,20 +22,10 @@
     when: ansible_distribution == "CentOS"
 
 
-  - name: Stop httpd for CentOS
-    service:
-      name: httpd
-      state: stopped
-    when: ansible_distribution == "CentOS"
-
-  - name: uninstall apache2 and php and update cache -  CentOS
-    dnf: 
-      name: 
-       - httpd
-       - php
-      state: absent
-      update_cache: yes
-    when: ansible_distribution == "CentOS"
-
+  # - name: Stop httpd for CentOS
+  #   service:
+  #     name: httpd
+  #     state: stopped
+  #   when: ansible_distribution == "CentOS"
 
 
