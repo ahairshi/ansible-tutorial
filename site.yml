@@ -1,0 +1,96 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: install updates (CentOS)
+      tags: always
+      dnf:
+        update_only: yes
+        update_cache: yes
+      when: ansible_distribution == "CentOS"
+
+    - name: install updates (Ubuntu)
+      tags: always
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  become: true
+  tasks:
+    - name: install apache and php for Ubuntu servers
+      tags: apache,ubuntu,httpd
+      apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+ 
+    - name: install apache and php for CentOS servers
+      tags: apache,centos,httpd
+      dnf:
+        name:
+          - httpd
+          - php
+        state: latest
+      when: ansible_distribution == "CentOS"
+
+    - name: Enable service to start on boot up - CentOS
+      tags: apache,centos,httpd
+      service:
+        name: httpd
+        state: started
+      when: ansible_distribution == "CentOS"
+
+    - name: Create firewall rule for apache service - CentOS
+      tags: apache,centos,httpd
+      firewalld:
+        service: http
+        zone: public
+        permanent: yes
+        immediate: yes
+        state: enabled
+      when: ansible_distribution == "CentOS"
+
+- hosts: db_servers
+  become: true
+  tasks:
+    - name: install mariadb package (CentOS)
+      tags: centos,db,mariadb
+      dnf:
+        name: mariadb
+        state: latest
+      when: ansible_distribution == "CentOS"
+
+    - name: install mariadb server (Ubuntu)
+      tags: ubuntu,db,mariadb
+      apt:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+
+    - name: ensure mariadb is running
+      tags: centos,db,mariadb,ubuntu
+      service:
+        name: mariadb
+        state: started
+
+    - name: checking service status
+      tags: centos,db,mariadb,ubuntu
+      command: systemctl status mariadb
+      register: result
+      ignore_errors: yes
+    - name: showing report
+      debug:
+        var: result
+
+- hosts: file_servers
+  become: true
+  tasks:
+    - name: install samba package
+      tags: samba
+      package:
+        name: samba
+        state: latest

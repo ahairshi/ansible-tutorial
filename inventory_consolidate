@@ -1,0 +1,8 @@
+192.168.77.131 apache_package=apache2 php_package=libapache2-mod-php
+192.168.77.139 apache_package=apache2 php_package=libapache2-mod-php
+192.168.77.140 apache_package=apache2 php_package=libapache2-mod-php
+192.168.77.141 apache_package=httpd php_package=php
+
+[all:vars]
+ansible_connection=ssh 
+ansible_user=ahairshi
